@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>第一个vue</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<style>
+			.class1{
+		background: #666;
+		color: azure;
+	}
+	</style>
+	</head>
+	<body>
+		<div id="app">
+			{{m+'222'}}
+			<p v-text="m+'111'"></p>
+			<div v-html="h"></div>
+			<input type="button" value="改变下面一行的样式" v-on:click="f2"></input>
+			<div v-bind:class="{class1:use}">class1的使用与否取决于use</div>
+
+			<input type="button" value="btn" v-on:click="f1">{{reverse}}</input>
+			<input type="button" value="dbclick" @dblclick="f1">
+			<br />
+			<img v-bind:src="'image/'+imageName" alt="可变换的图片" title="点击图片会改变" v-on:click="f3">
+		</div>
+
+	</body>
+	<script>
+		var app = new Vue({
+			el: "#app",
+			data: {
+				reverse: "HBuildX",
+				m: "aaa" + "bbb",
+				h: "<hr>",
+				use: true,
+				imageName: "dog.png"
+
+			},
+			methods: {
+				f3: function() {
+					if (this.$data.imageName === "dog.png") {
+						this.$data.imageName = "heart.png";
+					} else {
+						this.$data.imageName = "dog.png";
+					}
+				},
+				f2: function() {
+					// if(this.$data.use){
+					// 	this.$data.use=false;
+					// }
+					// else{
+					// 	this.$data.use=true;
+					// }
+					this.$data.use = !this.$data.use;
+				},
+				f1: function() {
+					//split('')按‘’分离成字符串数组，默认split()不会改变、
+					//倒置、
+					//join('')用‘’连接，默认join()用逗号连接
+					this.$data.reverse = this.$data.reverse.split('').reverse().join('');
+				}
+			}
+		})
+	</script>
+</html>
