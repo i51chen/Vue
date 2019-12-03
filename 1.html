@@ -5,7 +5,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title>第一个vue</title>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		 crossorigin="anonymous">
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+		 crossorigin="anonymous"></script>
 		<style>
 			.class1{
 		background: #666;
@@ -18,13 +25,70 @@
 			{{m+'222'}}
 			<p v-text="m+'111'"></p>
 			<div v-html="h"></div>
-			<input type="button" value="改变下面一行的样式" v-on:click="f2"></input>
+			<input type="button" value="改变下面一行的样式" v-on:click="f2()"></input>
 			<div v-bind:class="{class1:use}">class1的使用与否取决于use</div>
+			<div :class="{class1:use}">绑定属性v-bind:的缩写:</div>
+			<div v-if="use">v-if的使用，use</div>
 
 			<input type="button" value="btn" v-on:click="f1">{{reverse}}</input>
 			<input type="button" value="dbclick" @dblclick="f1">
 			<br />
-			<img v-bind:src="'image/'+imageName" alt="可变换的图片" title="点击图片会改变" v-on:click="f3">
+			<img v-bind:src="'image/'+imageName" alt="可变换的图片" title="点击图片会改变" v-on:mouseenter="f3">
+			<hr />
+			<div class="input-num">
+				<img src="image/heart.png" v-show="num>5" />
+				<img src="image/dog.png" v-if="num>5" />
+				<br />
+				<p>大于5 v-show生效 改变元素的样式display</p>
+				<p>大于5 v-if生效 改变DOM树的元素</p>
+				<button @click="sub()">-</button>
+				<span>{{num}}</span>
+				<button @click="add()">+</button>
+			</div>
+			<hr />
+			<hr />
+			<table class="table table-striped text-center">
+				<thead>
+					<tr>
+						<th class="text-center">#</th>
+						<th class="text-center">学号</th>
+						<th class="text-center">姓名</th>
+						<th class="text-center">性别</th>
+						<th class="text-center">班级</th>
+						<th class="text-center">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in items">
+						<td>{{index+1}}</td>
+						<td>{{item.no}}</td>
+						<td>{{item.name}}</td>
+						<td>{{item.gender}}</td>
+						<td>{{item.studentClass}}</td>
+						<td><span v-on:click="f4(index)" data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-remove"></span>
+						</td>
+						</a>
+					</tr>
+				</tbody>
+
+			</table>
+			<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Modal title</h4>
+						</div>
+						<div class="modal-body">
+							<p>确定删除{{this.$data.items[this.delIndex].name}}？</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button @click="f5()" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
 		</div>
 
 	</body>
@@ -32,14 +96,62 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+				num: 1,
 				reverse: "HBuildX",
 				m: "aaa" + "bbb",
 				h: "<hr>",
 				use: true,
-				imageName: "dog.png"
-
+				imageName: "dog.png",
+				delIndex: 0,
+				items: [{
+					no: '201600010001',
+					name: '小红',
+					gender: '女',
+					studentClass: '软件161'
+				}, {
+					no: '201600010002',
+					name: 'xiaoqiang',
+					gender: 'nan',
+					studentClass: '软件161'
+				}, {
+					no: '201600010001',
+					name: '小红',
+					gender: '女',
+					studentClass: '软件161'
+				}, {
+					no: '201600010005',
+					name: '小张',
+					gender: '男',
+					studentClass: '软件162'
+				}]
 			},
 			methods: {
+				sub:function(){
+					if(this.num>0){
+						this.num--;
+					}else{
+						alert("最小了，不能再减");
+					}
+				},
+				add:function(){
+					if(this.num<10){
+						this.num++;
+					}else{
+						alert("最大了")
+					}
+				},
+				f5: function() {
+					//删除一个，从delIndex开始
+					this.items.splice(this.delIndex, 1);
+				},
+				f4: function(index) {
+					this.$data.delIndex = index;
+					// var that = this;
+					$('#myModal').on('show.bs.modal', function() {
+						// 执行一些动作...
+						// that.$data.delName = name;
+					})
+				},
 				f3: function() {
 					if (this.$data.imageName === "dog.png") {
 						this.$data.imageName = "heart.png";

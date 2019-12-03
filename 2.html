@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>第二个vue</title>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		 crossorigin="anonymous">
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+		 crossorigin="anonymous"></script>
+
+	</head>
+	<body>
+		<div id="app">
+
+			<div class="input-num">
+				<img src="image/heart.png" v-show="num>5" />
+				<img src="image/dog.png" v-if="num>5" />
+				<br />
+				<p>大于5 v-show生效 改变元素的样式display</p>
+				<p>大于5 v-if生效 改变DOM树的元素</p>
+				<button @click="sub()">-</button>
+				<span>{{num}}</span>
+				<button @click="add()">+</button>
+			</div>
+			<hr />
+			<span @click="pre()" v-show="index!=0" class="glyphicon glyphicon-chevron-left"></span>
+			<img :src="imgaArray[index]" height="200px" />
+			<span @click="next()" v-show="index!=imgaArray.length-1" class="glyphicon glyphicon-chevron-right"></span>
+			<hr />
+			<h3>天气</h3>
+			<p>{{"城市："+resq.basic.location}}</p>
+			<p>{{"体感温度："+resq.now.fl+"℃"}}</p>
+			<p>{{"天气："+resq.now.cond_txt}}</p>
+			<hr />
+			<button @click="unshift()">unshift</button>
+			<button @click="push()">push</button>
+			<button @click="pop()">pop</button>
+			<button @click="shift()">shift</button>
+			<ul>
+				<li v-for="item in objArr">{{item.name}}：{{item.num}}</li>
+			</ul>
+			<p>键盘的keyCode</p>
+			<input type="text" @keypress="getKeyCode($event)">"keyCode:"{{keyCode}}</input><br />
+			<input @keydown.down ="sub()">-</inout>
+			<span>{{num}}</span>
+			<input @keydown.up ="add()">+</input>
+		</div>
+	</body>
+	<script>
+		var app = new Vue({
+
+			el: "#app",
+			data: {
+				resq: [],
+				num: 1,
+				index: 1,
+				keyCode: "",
+				imgaArray: [
+					"image/he1.png",
+					"image/he2.png",
+					"image/he3.png",
+					"image/he4.png",
+					"image/he5.png",
+					"image/he6.png",
+					"image/he7.png",
+				],
+				objArr: [{
+						name: "pop()",
+						num: "删除尾元素"
+					},{
+						name: "shift",
+						num: "删除首元素"
+					},{
+						name: "push",
+						num: "尾插"
+					}, {
+						name: "unshift",
+						num: "头插"
+					},
+				]
+			},
+			methods: {
+				shift: function() {
+					this.$data.objArr.shift();
+				},
+				pop: function() {
+					this.$data.objArr.pop();
+				},
+				push: function() {
+					this.$data.objArr.push({
+						name: "push",
+						num: "尾插"
+					});
+				},
+				unshift: function() {
+					this.$data.objArr.unshift({
+						name: "unshift",
+						num: "头插"
+					});
+				},
+				getKeyCode: function(e) {
+					this.$data.keyCode = e.keyCode
+				},
+				pre: function() {
+					this.index--;
+				},
+				next: function() {
+					this.index++;
+
+				},
+				sub: function() {
+					if (this.num > 0) {
+						this.num--;
+					} else {
+						alert("最小了，不能再减");
+					}
+				},
+				add: function() {
+					if (this.num < 10) {
+						this.num++;
+					} else {
+						alert("最大了")
+					}
+				},
+
+			},
+			beforeCreate: function() {
+				$.ajax({
+					type: 'GET',
+					url: 'https://free-api.heweather.net/s6/weather/now?location=CN101120101&key=da45031dfde947a5aff763031da08953',
+					data: '',
+					dataType: 'JSON',
+					error: function() {
+						alert('网络错误');
+					},
+					success: (res) => {
+
+						this.$data.resq = res.HeWeather6[0];
+						console.log(this.$data.resq);
+
+					}
+				})
+			}
+
+
+		})
+	</script>
+</html>
